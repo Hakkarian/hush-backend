@@ -1,25 +1,23 @@
+from dotenv import load_dotenv
+load_dotenv()
 from flask import jsonify, request, Response
+from flask_cors import CORS
 
 from backend import create_app
+from backend.cloudinary.cloudinary_config import configure_cloudinary, fetch_store_pictures, retrieve_pictures
+from backend.postgresql.postgre_config import configure_postgresql
 
 app = create_app()
+CORS(app)
+
+configure_cloudinary()
+conn, cursor = configure_postgresql()
+# fetch_store_pictures(cursor)
+
 
 @app.route("/health", methods=["GET"])
 def health_check():
     return "ok"
-
-@app.route("/gallery", methods=["GET"])
-def get_all_users():
-    all_users = [{"id": 1, "name": "daniel"}, {"id": 2, "name": "bob"}]
-    return jsonify(all_users)
-
-@app.route("/gallery", methods=["POST"])
-def create_user():
-    print("hererere")
-    d = request.json
-    all_users.append(d)
-    print(d)
-    return jsonify(all_users), 201
 
 
 if __name__ == "__main__":
