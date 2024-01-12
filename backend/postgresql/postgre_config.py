@@ -26,10 +26,6 @@ def configure_postgresql():
 
     cursor.execute("""SELECT * FROM pictures WHERE cloudinary_id = %s """, ('400',))
 
-    print(cursor.fetchall())
-
-    print(cursor.fetchall())
-
     conn.commit()
     cursor.close()
     conn.close()
