@@ -20,14 +20,4 @@ def configure_postgresql():
         )
     """)
 
-    cursor.execute("""
-        INSERT INTO pictures (cloudinary_url, cloudinary_id) VALUES (%s, %s)
-    """, ("ddfghdfgh", "600"))
-
-    cursor.execute("""SELECT * FROM pictures WHERE cloudinary_id = %s """, ('400',))
-
-    conn.commit()
-    cursor.close()
-    conn.close()
-
     return conn, cursor
