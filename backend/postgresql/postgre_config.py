@@ -3,10 +3,11 @@ import psycopg2
 def configure_postgresql():
     # Configure PostgreSQL
     conn = psycopg2.connect(
-        host="your_postgresql_host",
-        database="postgres",
-        user="your_user",
-        password="your_password"
+        host="localhost",
+        dbname="postgres",
+        user="postgres",
+        password="$=w_$%v7M=`|;[n92}$YJ$8XGTk_hfz6!",
+        port=5433
     )
     cursor = conn.cursor()
 
@@ -18,6 +19,19 @@ def configure_postgresql():
             cloudinary_url VARCHAR(255)
         )
     """)
+
+    cursor.execute("""
+        INSERT INTO pictures (cloudinary_url, cloudinary_id) VALUES (%s, %s)
+    """, ("ddfghdfgh", "600"))
+
+    cursor.execute("""SELECT * FROM pictures WHERE cloudinary_id = %s """, ('400',))
+
+    print(cursor.fetchall())
+
+    print(cursor.fetchall())
+
     conn.commit()
+    cursor.close()
+    conn.close()
 
     return conn, cursor

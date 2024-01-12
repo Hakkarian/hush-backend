@@ -12,6 +12,10 @@ flask-cors = "^4.0.0"
 cloudinary = "^1.38.0"
 psycopg2 = "^2.9.9"
 python-dotenv = "^1.0.0"
+watchdog = "^3.0.0"
+
+[tool.poe.tasks]
+back = "poetry run python -m backend"
 
 
 [build-system]
