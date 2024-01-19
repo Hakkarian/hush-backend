@@ -4,7 +4,7 @@ from flask import jsonify, request, Response
 from flask_cors import CORS
 
 from backend import create_app
-from backend.cloudinary.cloudinary_config import configure_cloudinary, fetch_store_pictures, retrieve_pictures
+from backend.config.cloudinary_config import configure_cloudinary, fetch_store_pictures, retrieve_pictures
 from backend.routes.health import health_bp
 from backend.routes.gallery import gallery_bp
 
