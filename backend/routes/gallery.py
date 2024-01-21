@@ -1,9 +1,12 @@
 from flask import Blueprint, jsonify, request, Response
+from io import BytesIO
+from PIL import Image
+import base64
 import cloudinary.uploader
+import cloudinary.api
 
 from backend.config.postgre_config import configure_postgresql
-from config.weaviate_config import create_weaviate
-
+from backend.config.weaviate_config import create_weaviate, store_photo, search_similar
 
 gallery_bp = Blueprint("gallery", __name__, url_prefix="/gallery")
 
@@ -34,25 +37,43 @@ def create_picture():
     cursor.execute("""
         INSERT INTO pictures (cloudinary_url, cloudinary_id) VALUES (%s, %s)
     """, (url, id))
+
+    store_photo(url)
     print("6")
     conn.commit()
 
     return jsonify("yas"), 201
 
-@gallery_bp.route("/createw", methods=["POST"])
-    const req = requst.json
-    schema_config = req.get("schema_config")
-    create_weaviate(schema_config)
+@gallery_bp.route("/similar", methods=["POST"])
+def similar(): 
+    uploaded_file = Image.open(request.files['image'].stream)
+    buffer = BytesIO()
+    uploaded_file.save(buffer, format="JPEG")
+    img_str = base64.b64encode(buffer.getvalue()).decode()
+    weaviate_results = search_similar(img_str)
+
+    images = []
+    for obj in weaviate_results:
+        image = obj["image"]
+        images.append(image)
+    return jsonify(images), 201
+
+@gallery_bp.route("/createw", methods=["GET"])
+def weaviate():
+    create_weaviate()
     return jsonify("Class has been created succesfully")
 
 @gallery_bp.route("/remove", methods=["POST"])
 def remove_picture():
     req = request.json
-    url = req.get("url")
-    print('removable image', url)
+    id = req.get("public_id")
+    print('removable id', id)
+
+    cloudinary.uploader.destroy(id)
+
     cursor.execute("""
-        DELETE FROM pictures WHERE cloudinary_url = %s
-     """, (url,))
+        DELETE FROM pictures WHERE cloudinary_id = %s
+     """, (id,))
 
     conn.commit()
     return jsonify("Picture has been deleted succesfully")

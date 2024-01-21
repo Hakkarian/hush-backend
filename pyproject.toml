@@ -14,6 +14,8 @@ psycopg2 = "^2.9.9"
 python-dotenv = "^1.0.0"
 watchdog = "^3.0.0"
 weaviate-client = "^3.26.1"
+requests = "^2.31.0"
+pillow = "^10.2.0"
 
 [tool.poe.tasks]
 back = "poetry run python -m backend"
