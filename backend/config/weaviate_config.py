@@ -1,5 +1,6 @@
 from weaviate import Client
 import requests
+import base64
 # creating a client object to interact with the Weaviate server. It specifies the scheme (http) and the host
 # (localhost:8080) where the Weaviate server is running. This client object can be used to perform
 # various operations such as creating classes, adding data, querying data, etc. */
@@ -68,7 +69,7 @@ def search_similar(sample_image_path):
       "Hush", ["image"]
     ).with_near_image(
       sourceImage, encode=False
-    ).with_limit(2).do()    
+    ).with_limit(5).do()    
     return weaviate_results["data"]["Get"]["Hush"]
 
 # "http://res.cloudinary.com/dlw7wjlp3/image/upload/v1705452114/obgnyi7emkpac0lktdhx.jpg"

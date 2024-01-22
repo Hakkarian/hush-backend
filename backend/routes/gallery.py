@@ -53,9 +53,14 @@ def similar():
     weaviate_results = search_similar(img_str)
 
     images = []
-    for obj in weaviate_results:
-        image = obj["image"]
-        images.append(image)
+    for idx, obj in enumerate(weaviate_results):
+        result = obj["image"]
+        # create a file with the result inside, similar to writeFileSync(path, result, "base64")
+        file_path = f"result_{idx}.jpg"
+        with open(file_path, "wb") as file:
+            file.write(base64.b64decode(result))
+
+        images.append(file_path)
     return jsonify(images), 201
 
 @gallery_bp.route("/createw", methods=["GET"])
