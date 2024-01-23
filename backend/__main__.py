@@ -11,7 +11,7 @@ from backend.routes.gallery import gallery_bp
 
 app = create_app()
 CORS(app)
-app.config['MAX_CONTENT_LENGTH'] = 50 * 1024 * 1024
+app.config['MAX_CONTENT_LENGTH'] = 100 * 1024 * 1024
 
 configure_cloudinary()
 # fetch_store_pictures(cursor)

@@ -8,11 +8,6 @@ import base64
 
 client = Client("http://localhost:8080")
 
-client.batch.configure(
-  batch_size=10,
-  dynamic=True,
-  timeout_retries=3
-)
 
 # The `schemaConfig` object is defining the schema for a class called "Meme" in the Weaviate server.
 # It specifies the properties and data types of the class. 
@@ -44,7 +39,6 @@ def create_weaviate():
 
 
 def store_photo(image_url):
-  try:
     # Download image from the URL
     response = requests.get(image_url)
     response.raise_for_status()
@@ -58,18 +52,21 @@ def store_photo(image_url):
         "text": image_url.split("/")[-1].split(".")[0]
     }
 
-    client.batch.add_data_object(data_properties, "Hush")
-  except requests.exceptions.RequestException as e:
-    print(f"Error downloading image from {image_url}: {e}")
+    with client.batch() as batch:
+        batch.add_data_object(data_properties,"Hush")
+
+
 
 def search_similar(sample_image_path):
     sourceImage = {"image": sample_image_path}
 
+    schema = client.schema.get()
     weaviate_results = client.query.get(
       "Hush", ["image"]
     ).with_near_image(
       sourceImage, encode=False
-    ).with_limit(5).do()    
+    ).with_limit(2).do()    
+    print('that is a', schema)
     return weaviate_results["data"]["Get"]["Hush"]
 
 # "http://res.cloudinary.com/dlw7wjlp3/image/upload/v1705452114/obgnyi7emkpac0lktdhx.jpg"
